@@ -90,7 +90,7 @@ func TestDecoder_unmarshal(t *testing.T) {
 			d := &Decoder{
 				provider: tt.fields.provider,
 			}
-			if err := d.unmarshal(tt.args.val, tt.args.paires, false); (err != nil) != tt.wantErr {
+			if err := d.unmarshal(tt.args.val, tt.args.paires); (err != nil) != tt.wantErr {
 				t.Errorf("Decoder.unmarshal() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

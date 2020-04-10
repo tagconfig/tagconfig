@@ -1,13 +1,11 @@
 package apollo
 
 import (
-	"errors"
-	"os"
 	"reflect"
 	"strings"
 
-	"github.com/n0trace/tagconfig"
 	"github.com/shima-park/agollo"
+	"github.com/tagconfig/tagconfig"
 )
 
 var (
@@ -19,47 +17,12 @@ type Client struct {
 	namespaces []string
 }
 
-func MustClient(appid string, namespaces []string) *Client {
-	c, err := GetClient(appid, namespaces)
-	if err != nil {
-		panic(err)
+// NewClient returns a client
+func NewClient(c agollo.Agollo, appid string, namespaces []string) *Client {
+	return &Client{
+		Agollo:     c,
+		namespaces: namespaces,
 	}
-	return c
-}
-
-func GetClient(appid string, namespaces []string) (client *Client, err error) {
-	client = new(Client)
-	client.namespaces = namespaces
-	var (
-		token           = os.Getenv("CONFIG_CENTER_TOKEN")
-		configServerURL = os.Getenv("CONFIG_CENTER_URL")
-		cluster         = os.Getenv("RUNTIME_CLUSTER")
-	)
-
-	if token == "" {
-		err = errors.New("token empty")
-	}
-
-	if configServerURL == "" {
-		err = errors.New("config server empty")
-	}
-
-	if cluster == "" {
-		err = errors.New("cluster empty")
-	}
-
-	if err != nil {
-		return
-	}
-
-	var opts = []agollo.Option{
-		agollo.AutoFetchOnCacheMiss(),
-		agollo.Cluster(cluster),
-		agollo.WithApolloClient(agollo.NewApolloClient()),
-	}
-
-	client.Agollo, err = agollo.New(configServerURL, appid, opts...)
-	return
 }
 
 func (c *Client) Paires() (paires []tagconfig.Paire, err error) {

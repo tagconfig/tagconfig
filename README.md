@@ -2,7 +2,7 @@
 
 ```sh
 cd example
-make
+go run .
 ```
 
 ## 用法
@@ -10,17 +10,22 @@ make
 
 ```go
 import (
-    "github.com/n0trace/tagconfig"
-    "github.com/n0trace/tagconfig/apollo"
+	"github.com/shima-park/agollo"
+	"github.com/n0trace/tagconfig"
+	"github.com/n0trace/tagconfig/apollo"
 )
 //配置结构体
 config := new(Config)
-//new一个apollo客户端
-//并申明配置会用到 application 和 example-common 命名空间
-//cluster,endpoint,token都会从配置读取
-client := apollo.MustClient("example", []string{"application", "example-common"})
+//new一个agollo客户端(第三方)
+c, err := agollo.New(configServerURL, appid, opts...)
+if err != nil {
+	panic(err)
+}
+//用第三方客户端初始化一个配置provider
+client := apollo.NewClient(c, appid, []string{"application", "development.common-mysql"})
 //获得一个apollo配置解析器
 decoder := tagconfig.NewDecoder(client)
+//把配置解析到config
 err := decoder.Decode(&config)
 ```
 

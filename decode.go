@@ -65,7 +65,7 @@ func (d *Decoder) Decode(v interface{}) (err error) {
 	return d.unmarshalRoot(val.Elem(), pairesTree)
 }
 
-func (d *Decoder) unmarshalRoot(val reflect.Value, pairesTree map[string]*dotTree) (err error) {
+func (d *Decoder) unmarshalRoot(val reflect.Value, pairesTree map[string]*PathTrie) (err error) {
 	for i := 0; i < val.NumField(); i++ {
 		var (
 			paires    = make(map[string]string)
@@ -81,16 +81,16 @@ func (d *Decoder) unmarshalRoot(val reflect.Value, pairesTree map[string]*dotTre
 			key = strings.Split(key, ",")[0]
 		}
 
-		node, ok := pairesTree[namespace].Get(key)
-		if ok && node.value != nil {
-			paires["."] = node.value.(string)
+		node, ok := pairesTree[namespace].StartWith(key)
+		if ok && node.Value != nil {
+			paires["."] = node.Value.(string)
 		}
 
 		if ok {
 			keys := node.FlattenChild()
 			for _, k := range keys {
-				kNode, _ := node.Get(k)
-				paires[k] = kNode.value.(string)
+				kNode, _ := node.StartWith(k)
+				paires[k] = kNode.Value.(string)
 			}
 		}
 
@@ -278,12 +278,12 @@ func copyValue(dst reflect.Value, src []byte) (err error) {
 	return nil
 }
 
-func buildPairesTree(paires []Paire) (root map[string]*dotTree) {
-	root = make(map[string]*dotTree)
+func buildPairesTree(paires []Paire) (root map[string]*PathTrie) {
+	root = make(map[string]*PathTrie)
 	for _, p := range paires {
 		_, ok := root[p.Namespace]
 		if !ok {
-			root[p.Namespace] = newDotTree(nil)
+			root[p.Namespace] = newPathTrie(nil)
 		}
 		root[p.Namespace].Put(p.Key, p.Value)
 	}
