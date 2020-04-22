@@ -5,36 +5,36 @@ import (
 	"testing"
 )
 
-func Test_dotTree_Put(t *testing.T) {
-	node := newDotTree("")
+func Test_PathTrie_Put(t *testing.T) {
+	node := newPathTrie("")
 	node.Put("a", "{}")
-	gotNode, ok := node.Get("a")
+	gotNode, ok := node.StartWith("a")
 	if !ok {
 		t.Log("not get a")
 	}
 
-	if gotNode.value != "{}" {
-		t.Errorf("gotValue = %v, want %v", gotNode.value, "{}")
+	if gotNode.Value != "{}" {
+		t.Errorf("gotValue = %v, want %v", gotNode.Value, "{}")
 	}
 
 	node.Put("a", "c")
-	gotNode, ok = node.Get("a")
-	if gotNode.value != "c" {
-		t.Errorf("gotValue = %v, want %v", gotNode.value, "c")
+	gotNode, ok = node.StartWith("a")
+	if gotNode.Value != "c" {
+		t.Errorf("gotValue = %v, want %v", gotNode.Value, "c")
 	}
 
 	node.Put("a.b", "d")
-	gotNode, ok = node.Get("a")
-	if gotNode.value != "c" {
-		t.Errorf("gotValue = %v, want %v", gotNode.value, "c")
+	gotNode, ok = node.StartWith("a")
+	if gotNode.Value != "c" {
+		t.Errorf("gotValue = %v, want %v", gotNode.Value, "c")
 	}
 
-	gotNode, ok = node.Get("a.b")
-	if gotNode.value != "d" {
-		t.Errorf("gotValue = %v, want %v", gotNode.value, "d")
+	gotNode, ok = node.StartWith("a.b")
+	if gotNode.Value != "d" {
+		t.Errorf("gotValue = %v, want %v", gotNode.Value, "d")
 	}
 
-	gotNode, ok = node.Get("c")
+	gotNode, ok = node.StartWith("c")
 	if ok {
 		t.Errorf("gotOk = %v, want %v", ok, false)
 	}
@@ -44,11 +44,11 @@ func Test_dotTree_Put(t *testing.T) {
 	}
 }
 
-func Test_dotTree_Get(t *testing.T) {
+func Test_PathTrie_StartWith(t *testing.T) {
 	type fields struct {
 		hasNext bool
 		Value   string
-		nexts   map[string]*dotTree
+		nexts   map[string]*PathTrie
 	}
 
 	type args struct {
@@ -91,23 +91,23 @@ func Test_dotTree_Get(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dt := newDotTree(nil)
+			dt := newPathTrie(nil)
 			dt.Put(tt.args.fill, tt.args.value)
-			gotNode, gotOk := dt.Get(tt.args.k)
+			gotNode, gotOk := dt.StartWith(tt.args.k)
 			if gotOk != tt.wantOk {
-				t.Errorf("dotTree.Get() gotOk = %v, want %v", gotOk, tt.wantOk)
+				t.Errorf("PathTrie.StartWith() args:%+v gotOk = %v, want %v", tt, gotOk, tt.wantOk)
 			}
 
 			if gotNode == nil != tt.wantNodeNil {
-				t.Errorf("dotTree.Get() gotNil = %v, want %v", gotNode == nil, tt.wantNodeNil)
+				t.Errorf("PathTrie.StartWith() args:%+v gotNil = %v, want %v", tt, gotNode == nil, tt.wantNodeNil)
 			}
 
 			if gotNode == nil || tt.wantNodeNil {
 				return
 			}
 
-			if !reflect.DeepEqual(gotNode.value, tt.wantNodeVal) {
-				t.Errorf("dotTree.Get() gotNode = %v, want %v", gotNode.value, tt.wantNodeVal)
+			if !reflect.DeepEqual(gotNode.Value, tt.wantNodeVal) {
+				t.Errorf("PathTrie.StartWith() args:%+v gotNode = %v, want %v", tt, gotNode.Value, tt.wantNodeVal)
 			}
 		})
 	}
