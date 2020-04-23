@@ -11,14 +11,23 @@ var (
 	testTag       = "test"
 )
 
-type testConfigProvider struct {
+type TestConfigProvider struct {
+	configMap map[string]string
 }
 
-func (t *testConfigProvider) Paires() ([]Paire, error) {
-	return nil, nil
+func (t *TestConfigProvider) Paires() (paires []Paire, err error) {
+	paires = make([]Paire, 0)
+	for k, v := range t.configMap {
+		paires = append(paires, Paire{
+			Namespace: testDefaultNS,
+			Key:       k,
+			Value:     v,
+		})
+	}
+	return
 }
 
-func (t *testConfigProvider) FieldInfo(field reflect.StructField) (namespace string, key string) {
+func (t *TestConfigProvider) FieldInfo(field reflect.StructField) (namespace string, key string) {
 	namespace = testDefaultNS
 	tag, hasTag := field.Tag.Lookup(testTag)
 	fieldName := field.Name
@@ -59,7 +68,7 @@ func TestDecoder_unmarshal(t *testing.T) {
 	}
 	tests := []Case{
 		Case{
-			fields: fields{provider: new(testConfigProvider)},
+			fields: fields{provider: new(TestConfigProvider)},
 			args: args{
 				val:    reflect.ValueOf(new(Dst)).Elem(),
 				paires: map[string]string{"field1": "1a", "Field2": "2b"},
@@ -68,7 +77,7 @@ func TestDecoder_unmarshal(t *testing.T) {
 		},
 
 		Case{
-			fields: fields{provider: new(testConfigProvider)},
+			fields: fields{provider: new(TestConfigProvider)},
 			args: args{
 				val:    reflect.ValueOf(new(Dst)).Elem(),
 				paires: map[string]string{"field1": "hello", "field2": "2b"},
@@ -76,7 +85,7 @@ func TestDecoder_unmarshal(t *testing.T) {
 			wantErr: true,
 		},
 		Case{
-			fields: fields{provider: new(testConfigProvider)},
+			fields: fields{provider: new(TestConfigProvider)},
 			args: args{
 				val:    reflect.ValueOf(new(Dst)).Elem().FieldByName("field3"),
 				paires: map[string]string{".": "[1,2]"},
@@ -90,7 +99,7 @@ func TestDecoder_unmarshal(t *testing.T) {
 			d := &Decoder{
 				provider: tt.fields.provider,
 			}
-			if err := d.unmarshal(tt.args.val, tt.args.paires, false); (err != nil) != tt.wantErr {
+			if err := d.unmarshal(tt.args.val, tt.args.paires); (err != nil) != tt.wantErr {
 				t.Errorf("Decoder.unmarshal() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
