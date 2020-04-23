@@ -62,12 +62,13 @@ func TestDecoder_unmarshal(t *testing.T) {
 	}
 
 	type Dst struct {
-		Field1 string `test:"field1"`
-		Field2 int64  `test:"field2"`
-		Field3 []int  `test:"field3"`
+		Field1 string    `test:"field1"`
+		Field2 float64   `test:"field2"`
+		Field3 []float64 `test:"field3"`
 	}
+
 	tests := []Case{
-		Case{
+		{
 			fields: fields{provider: new(TestConfigProvider)},
 			args: args{
 				val:    reflect.ValueOf(new(Dst)).Elem(),
@@ -76,7 +77,7 @@ func TestDecoder_unmarshal(t *testing.T) {
 			wantErr: false,
 		},
 
-		Case{
+		{
 			fields: fields{provider: new(TestConfigProvider)},
 			args: args{
 				val:    reflect.ValueOf(new(Dst)).Elem(),
@@ -84,7 +85,7 @@ func TestDecoder_unmarshal(t *testing.T) {
 			},
 			wantErr: true,
 		},
-		Case{
+		{
 			fields: fields{provider: new(TestConfigProvider)},
 			args: args{
 				val:    reflect.ValueOf(new(Dst)).Elem().FieldByName("field3"),
