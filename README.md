@@ -1,5 +1,17 @@
 # tagconfig
 
+
+[![Build Status][1]][2]  [![codecov.io][3]][4] [![Go Report][5]][6] 
+
+[1]: https://github.com/tagconfig/tagconfig/workflows/Test/badge.svg "Build Status badge"
+[2]: https://github.com/tagconfig/tagconfig/workflows/Test/badge.svg "Action Build Status"
+
+[3]: https://codecov.io/github/tagconfig/tagconfig/coverage.svg?branch=master "Coverage badge"
+[4]: https://codecov.io/github/tagconfig/tagconfig?branch=master "Codecov Status"
+[5]: https://goreportcard.com/badge/github.com/tagconfig/tagconfig "Go Report badge"
+[6]: https://goreportcard.com/report/github.com/tagconfig/tagconfig "Go Report"
+
+
 ## 功能
 
 tagconfig 支持根据tag解析嵌套的扁平化的配置, 您只需要实现以下interface即可接入您的配置平台，本项目实现了apollo配置的接入，本项目不拉取配置，只负责将您拉取的配置解析到结构体。
