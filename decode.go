@@ -71,13 +71,11 @@ func (d *Decoder) unmarshalRoot(val reflect.Value, pairesTree map[string]*PathTr
 			paires    = make(map[string]string)
 			namespace string
 			key       string
-			useJSON   bool
 		)
 
 		namespace, key = d.provider.FieldInfo(val.Type().Field(i))
 
 		if strings.Contains(key, ",") {
-			useJSON = strings.Split(key, ",")[1] == "json"
 			key = strings.Split(key, ",")[0]
 		}
 
@@ -98,7 +96,7 @@ func (d *Decoder) unmarshalRoot(val reflect.Value, pairesTree map[string]*PathTr
 			continue
 		}
 
-		err = d.unmarshal(val.Field(i), paires, useJSON)
+		err = d.unmarshal(val.Field(i), paires)
 		if err != nil {
 			return
 		}
@@ -107,7 +105,7 @@ func (d *Decoder) unmarshalRoot(val reflect.Value, pairesTree map[string]*PathTr
 	return
 }
 
-func (d *Decoder) unmarshal(val reflect.Value, paires map[string]string, useJSON bool) (err error) {
+func (d *Decoder) unmarshal(val reflect.Value, paires map[string]string) (err error) {
 	if val.Kind() == reflect.Interface && !val.IsNil() {
 		e := val.Elem()
 		if e.Kind() == reflect.Ptr && !e.IsNil() {
@@ -141,10 +139,6 @@ func (d *Decoder) unmarshal(val reflect.Value, paires map[string]string, useJSON
 		}
 	}
 
-	if useJSON {
-		err = copyJSONValue(val, []byte(paires["."]))
-	}
-
 	switch v := val; v.Kind() {
 	default:
 		return errors.New("unknown type " + v.Type().String())
@@ -164,9 +158,7 @@ func (d *Decoder) unmarshalStruct(val reflect.Value, paires map[string]string) (
 	for i := 0; i < val.NumField(); i++ {
 		newPaires := make(map[string]string)
 		_, key := d.provider.FieldInfo(val.Type().Field(i))
-		var useJSON bool
 		if strings.Contains(key, ",") {
-			useJSON = strings.Split(key, ",")[1] == "json"
 			key = strings.Split(key, ",")[0]
 		}
 		v, ok := paires[key]
@@ -183,7 +175,7 @@ func (d *Decoder) unmarshalStruct(val reflect.Value, paires map[string]string) (
 			newPaires[newK] = v
 			delete(paires, k)
 		}
-		err = d.unmarshal(val.Field(i), newPaires, useJSON)
+		err = d.unmarshal(val.Field(i), newPaires)
 		if err != nil {
 			return
 		}
