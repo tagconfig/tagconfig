@@ -18,18 +18,18 @@ func Test_PathTrie_Put(t *testing.T) {
 	}
 
 	node.Put("a", "c")
-	gotNode, ok = node.StartWith("a")
+	gotNode, _ = node.StartWith("a")
 	if gotNode.Value != "c" {
 		t.Errorf("gotValue = %v, want %v", gotNode.Value, "c")
 	}
 
 	node.Put("a.b", "d")
-	gotNode, ok = node.StartWith("a")
+	gotNode, _ = node.StartWith("a")
 	if gotNode.Value != "c" {
 		t.Errorf("gotValue = %v, want %v", gotNode.Value, "c")
 	}
 
-	gotNode, ok = node.StartWith("a.b")
+	gotNode, _ = node.StartWith("a.b")
 	if gotNode.Value != "d" {
 		t.Errorf("gotValue = %v, want %v", gotNode.Value, "d")
 	}
@@ -67,21 +67,21 @@ func Test_PathTrie_StartWith(t *testing.T) {
 	}
 
 	tests := []usercase{
-		usercase{
+		{
 			args:        args{fill: "abc.def", k: "abc", value: "a"},
 			wantOk:      true,
 			wantNodeVal: nil,
 			wantNodeNil: false,
 		},
 
-		usercase{
+		{
 			args:        args{fill: "abc.def", k: "abc.def", value: "bcd"},
 			wantOk:      true,
 			wantNodeVal: "bcd",
 			wantNodeNil: false,
 		},
 
-		usercase{
+		{
 			args:        args{fill: "abc.def", k: "abc.d"},
 			wantOk:      false,
 			wantNodeVal: "",

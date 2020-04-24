@@ -8,21 +8,26 @@ import (
 
 var (
 	testDefaultNS = "test"
-	testTag       = "test"
+	testTag       = "tagconfig"
 )
 
 type TestConfigProvider struct {
-	configMap map[string]string
+	configs [][]string //[[key,value,namespace]]
 }
 
 func (t *TestConfigProvider) Paires() (paires []Paire, err error) {
 	paires = make([]Paire, 0)
-	for k, v := range t.configMap {
-		paires = append(paires, Paire{
+	for _, v := range t.configs {
+		p := Paire{
+			Key:       v[0],
+			Value:     v[1],
 			Namespace: testDefaultNS,
-			Key:       k,
-			Value:     v,
-		})
+		}
+
+		if len(v) == 3 {
+			p.Namespace = v[2]
+		}
+		paires = append(paires, p)
 	}
 	return
 }
@@ -47,13 +52,16 @@ func (t *TestConfigProvider) FieldInfo(field reflect.StructField) (namespace str
 }
 
 func TestDecoder_unmarshal(t *testing.T) {
+
 	type fields struct {
 		provider ConfigProvider
 	}
+
 	type args struct {
 		val    reflect.Value
 		paires map[string]string
 	}
+
 	type Case struct {
 		name    string
 		fields  fields
@@ -62,9 +70,9 @@ func TestDecoder_unmarshal(t *testing.T) {
 	}
 
 	type Dst struct {
-		Field1 string    `test:"field1"`
-		Field2 float64   `test:"field2"`
-		Field3 []float64 `test:"field3"`
+		Field1 string    `tagconfig:"field1"`
+		Field2 float64   `tagconfig:"field2"`
+		Field3 []float64 `tagconfig:"field3"`
 	}
 
 	tests := []Case{
@@ -85,6 +93,7 @@ func TestDecoder_unmarshal(t *testing.T) {
 			},
 			wantErr: true,
 		},
+
 		{
 			fields: fields{provider: new(TestConfigProvider)},
 			args: args{
