@@ -8,9 +8,9 @@
 
 [3]: https://codecov.io/github/tagconfig/tagconfig/coverage.svg?branch=master "Coverage badge"
 [4]: https://codecov.io/github/tagconfig/tagconfig?branch=master "Codecov Status"
+
 [5]: https://goreportcard.com/badge/github.com/tagconfig/tagconfig "Go Report badge"
 [6]: https://goreportcard.com/report/github.com/tagconfig/tagconfig "Go Report"
-
 
 ## 功能
 
