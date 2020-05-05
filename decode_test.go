@@ -72,7 +72,7 @@ func TestDecoder_unmarshal(t *testing.T) {
 	type Dst struct {
 		Field1 string    `tagconfig:"field1"`
 		Field2 float64   `tagconfig:"field2"`
-		Field3 []float64 `tagconfig:"field3"`
+		Field3 []float64 `tagconfig:"field3,json"`
 	}
 
 	tests := []Case{

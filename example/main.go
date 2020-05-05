@@ -29,10 +29,11 @@ type Config struct {
 	ServiceName string   `apollo:"serviceName"`
 	Duration    Duration `apollo:"duration"`
 	UserInfo    struct {
-		Name  string `apollo:"name"`
-		Age   int64  `apollo:"age"`
-		Email string `apollo:"email"`
-		Phone string
+		Name      string `apollo:"name"`
+		Age       int64  `apollo:"age"`
+		Email     string `apollo:"email"`
+		Phone     string
+		Followers []int64 `apollo:"followers,json"`
 	} `apollo:"userinfo"`
 	Friend struct {
 		Trade struct {
