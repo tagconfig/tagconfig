@@ -1,5 +1,7 @@
 # tagconfig
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5c23e37da95e4f3ba55439f104ddbcd0)](https://app.codacy.com/gh/tagconfig/tagconfig?utm_source=github.com&utm_medium=referral&utm_content=tagconfig/tagconfig&utm_campaign=Badge_Grade_Dashboard)
+
 
 [![Build Status][1]][2]  [![codecov.io][3]][4] [![Go Report][5]][6] 
 
