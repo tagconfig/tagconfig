@@ -60,6 +60,7 @@ type Config struct {
 		Age   int64 
 		Email string 
 		Phone string
+		Followers []int64
 	} 
 	Friend struct {
 		Trade struct {
@@ -79,10 +80,11 @@ type Config struct {
 	ServiceName string   `apollo:"serviceName"`
 	Duration    Duration `apollo:"duration"`
 	UserInfo    struct {
-		Name  string `apollo:"name"`
-		Age   int64  `apollo:"age"`
-		Email string `apollo:"email"`
-		Phone string
+		Name      string `apollo:"name"`
+		Age       int64  `apollo:"age"`
+		Email     string `apollo:"email"`
+		Phone     string
+		Followers []int64 `apollo:"followers,json"`
 	} `apollo:"userinfo"`
 	Friend struct {
 		Trade struct {
@@ -96,7 +98,7 @@ type Config struct {
 
 > 注意事项
 
-1.当子结构为slice或是map,会当作json解析,后续会支持tagconfig选项支持更多灵活的配置
+1.当子结构为slice或是map,会当作json解析,请在tag后面加上option json方便兼容后面的版本。
 
 ## 自定义解析器
 
@@ -114,3 +116,8 @@ func (foo *Foo)UnmarshalTagConfig(m map[string]string) (err error) {
     //m["Bar"]可以匹配到apollo设置为Config.Foo.Bar的kv
 }
 ```
+
+## TODO
+
+- [ ] 添加map结构解析
+- [ ] 添加slice结构解析

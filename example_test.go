@@ -22,23 +22,24 @@ func Example_decode() {
 		{"userinfo.name", "n0trace"},
 		{"userinfo.Age", "20"},
 		{"userinfo.bio", "don’t be evil"},
-		{"userinfo.male", "true"},
-		{"userinfo.Follower", "[1,2,101]"},
-		{"userinfo.Followed", `{"3":"hello"}`},
+		{"userinfo.Male", "true"},
+		{"userinfo.follower", "[1,2,101]"},
+		{"userinfo.followed", `{"3":"hello"}`},
 	}
 
 	type Message struct {
 		UserInfo struct {
 			Name     string `tagconfig:"name"`
 			Age      uint64
-			Male     bool        `tagconfig:"male"`
-			Bio      interface{} `tagconfig:"bio"`
-			Follower []int64
-			Followed map[int64]string
+			Male     bool
+			Bio      interface{}      `tagconfig:"bio"`
+			Follower []int64          `tagconfig:"follower,json"`
+			Followed map[int64]string `tagconfig:"followed,json"`
 		} `tagconfig:"userinfo"`
 		Foo      string `tagconfig:"common:foo"`
 		Duration `tagconfig:"duration"`
 	}
+
 	provider := &TestConfigProvider{configs: paires}
 	decoder := NewDecoder(provider)
 	message := new(Message)
