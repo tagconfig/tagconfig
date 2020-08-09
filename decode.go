@@ -128,7 +128,7 @@ func (d *Decoder) unmarshal(val reflect.Value, paires map[string]string, unmarsh
 	}
 
 	if !val.IsValid() {
-		return
+		return errors.New("not valid")
 	}
 
 	if len(paires) == 0 {
@@ -270,18 +270,6 @@ func copyUnmarshalValue(dst reflect.Value, src []byte, unmarshalFunc func([]byte
 		dst = dst.Addr()
 	}
 	return unmarshalFunc(bytes.NewBuffer(src).Bytes(), dst.Interface())
-}
-
-func copyJSONValue(dst reflect.Value, src []byte) (err error) {
-	if dst.Kind() == reflect.Ptr {
-		if dst.IsNil() {
-			dst.Set(reflect.New(dst.Type().Elem()))
-		}
-	} else {
-		dst = dst.Addr()
-	}
-	jsonDecoder := json.NewDecoder(bytes.NewBuffer(src))
-	return jsonDecoder.Decode(dst.Interface())
 }
 
 func copyValue(dst reflect.Value, src []byte) (err error) {

@@ -74,6 +74,9 @@ func TestDecoder_unmarshal(t *testing.T) {
 		Field2 float64          `tagconfig:"field2"`
 		Field3 []float64        `tagconfig:"field3"`
 		Field4 map[int64]string `tagconfig:"field4"`
+		Field5 map[string]struct {
+			Hello string
+		} `tagconfig:"field5"`
 	}
 
 	tests := []Case{
@@ -98,8 +101,26 @@ func TestDecoder_unmarshal(t *testing.T) {
 		{
 			fields: fields{provider: new(TestConfigProvider)},
 			args: args{
-				val:    reflect.ValueOf(new(Dst)).Elem().FieldByName("field3"),
-				paires: map[string]string{".": "[1,2]"},
+				val:    reflect.ValueOf(new(Dst)).Elem(),
+				paires: map[string]string{"field3": "[1,2]"},
+			},
+			wantErr: false,
+		},
+
+		{
+			fields: fields{provider: new(TestConfigProvider)},
+			args: args{
+				val:    reflect.ValueOf(new(Dst)).Elem(),
+				paires: map[string]string{"field4.a": "b", "field4.2": "d"},
+			},
+			wantErr: true,
+		},
+
+		{
+			fields: fields{provider: new(TestConfigProvider)},
+			args: args{
+				val:    reflect.ValueOf(new(Dst)).Elem(),
+				paires: map[string]string{"field5.a.Hello": "b", "field5.b.Hello": "x"},
 			},
 			wantErr: false,
 		},
@@ -115,4 +136,5 @@ func TestDecoder_unmarshal(t *testing.T) {
 			}
 		})
 	}
+
 }
