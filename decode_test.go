@@ -70,9 +70,10 @@ func TestDecoder_unmarshal(t *testing.T) {
 	}
 
 	type Dst struct {
-		Field1 string    `tagconfig:"field1"`
-		Field2 float64   `tagconfig:"field2"`
-		Field3 []float64 `tagconfig:"field3,json"`
+		Field1 string           `tagconfig:"field1"`
+		Field2 float64          `tagconfig:"field2"`
+		Field3 []float64        `tagconfig:"field3"`
+		Field4 map[int64]string `tagconfig:"field4"`
 	}
 
 	tests := []Case{
@@ -80,7 +81,7 @@ func TestDecoder_unmarshal(t *testing.T) {
 			fields: fields{provider: new(TestConfigProvider)},
 			args: args{
 				val:    reflect.ValueOf(new(Dst)).Elem(),
-				paires: map[string]string{"field1": "1a", "Field2": "2b"},
+				paires: map[string]string{"field1": "1a", "Field2": "2b", "field4.1": "a", "field4.2": "b"},
 			},
 			wantErr: false,
 		},
@@ -109,7 +110,7 @@ func TestDecoder_unmarshal(t *testing.T) {
 			d := &Decoder{
 				provider: tt.fields.provider,
 			}
-			if err := d.unmarshal(tt.args.val, tt.args.paires); (err != nil) != tt.wantErr {
+			if err := d.unmarshal(tt.args.val, tt.args.paires, nil); (err != nil) != tt.wantErr {
 				t.Errorf("Decoder.unmarshal() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

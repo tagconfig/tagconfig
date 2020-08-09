@@ -98,7 +98,7 @@ type Config struct {
 
 > 注意事项
 
-1.当子结构为slice或是map,会当作json解析,请在tag后面加上option json方便兼容后面的版本。
+1.当子结构为slice会当作json解析,请在tag后面加上option json方便兼容后面的版本。
 
 ## 自定义解析器
 
@@ -119,5 +119,5 @@ func (foo *Foo)UnmarshalTagConfig(m map[string]string) (err error) {
 
 ## TODO
 
-- [ ] 添加map结构解析
+- [*] 添加map结构解析
 - [ ] 添加slice结构解析
