@@ -87,7 +87,12 @@ func (d *Decoder) unmarshalRoot(val reflect.Value, pairesTree map[string]*PathTr
 			key = strings.Split(key, ",")[0]
 		}
 
-		node, ok := pairesTree[namespace].StartWith(key)
+		pathTire, ok := pairesTree[namespace]
+		if !ok {
+			continue
+		}
+
+		node, ok := pathTire.StartWith(key)
 		if ok && node.Value != nil {
 			paires["."] = node.Value.(string)
 		}
